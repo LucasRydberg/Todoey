@@ -29,17 +29,29 @@ class CategoryViewController: UITableViewController {
         
         return cell
     }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return categories.count
     }
     
     
-    //MARK: TableView Delegate Methods
+    //MARK: TableViloadItems()ew Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // did select a row
+        
+        performSegue(withIdentifier: "goToItems", sender: self)
+        
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        let destinationVC = segue.destination as! TodoListViewController
+        
+        if let indexPath = tableView.indexPathForSelectedRow {
+            destinationVC.selectedCategory = categories[indexPath.row]
+        }
+    }
     
     //MARK: Data manipulation
     func loadData(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
@@ -78,11 +90,12 @@ class CategoryViewController: UITableViewController {
             newCategory.name = textField.text!
             self.categories.append(newCategory)
             self.saveData()
+            
         }
         alert.addAction(action)
         
         alert.addTextField { (alertTextField) in
-            alertTextField.placeholder = "Create new category"
+            alertTextField.placeholder = "Create a new category"
             textField = alertTextField
         }
         
